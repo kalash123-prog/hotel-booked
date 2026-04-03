@@ -1,0 +1,127 @@
+<% layout("/boilerolate/boilerplate.ejs") %>
+<body>
+  <div class="row mt-3">
+    <div class="col-8 offset-2">
+    <h2>Listing details</h2>
+    <div class="card image cardnew" >
+  <div class="card-body">
+    <img src="<%=list.image.url%>"/>
+  </div>
+</div>
+<div class="card cards">
+  <div class="card-body">
+    <p>Owner: <%= list.owner.username %></p>
+  <b><%=list.title%></b> 
+   <br>
+   <%=list.description%>
+   <br>
+  &#8377 <%= (list.price || 0).toLocaleString("en-IN") %>
+   <br>
+   <%=list.location%>
+   <br>
+   <%=list.country%>
+  </div>
+</div>
+
+<%if(currentUser &&currentUser._id.equals( list.owner._id)){%>
+    <button class=" bt btn-dark">
+   <a href="/listing/<%=list._id%>/edit">edit list</a>
+   </button>
+    <div class="btn">
+   <form  method="post"  action="/listing/<%=list._id%>?_method=DELETE">
+    <button>delete list</button>
+   </form>
+   </div>
+  <%}%>
+   </div>
+  </div>
+<%if(currentUser){%>
+  <div class="row mt-3">
+    <div class="col-8 offset-2">
+  <form action="/listing/payment" method="get">
+  <input type="hidden" name="listingId" value="<%= list._id %>">
+  <button class="btn btn-success mt-2">Pay Now</button>
+</form>
+</div>
+  </div>
+   <%}%>
+  <hr>
+  <%if(currentUser){%>
+  <form  method="post" action="/listing/<%=list._id%>/review" novalidate class="needs-validation">
+  <div class="col-8 offset-2">
+    <h1>Add review</h1>
+   <label for="comment" class="form-label">Comment</label>
+  <input type="text" placeholder="comment" name="comment" id="comment" class="form-control" required >
+  <div class="invalid-feedback">Please write comment</div>
+  </div>
+ 
+   <div class="col-8 offset-2 mt-2">
+ <fieldset class="starability-slot">
+  <legend>Rate this:</legend>
+
+ 
+  <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked />
+
+
+  <input type="radio" id="rate5" name="rating" value="5" />
+  <label for="rate5" title="Amazing">5 stars</label>
+
+ 
+  <input type="radio" id="rate4" name="rating" value="4" />
+  <label for="rate4" title="Very good">4 stars</label>
+
+  
+  <input type="radio" id="rate3" name="rating" value="3" />
+  <label for="rate3" title="Average">3 stars</label>
+
+ 
+  <input type="radio" id="rate2" name="rating" value="2" />
+  <label for="rate2" title="Not good">2 stars</label>
+
+  
+  <input type="radio" id="rate1" name="rating" value="1" />
+  <label for="rate1" title="Terrible">1 star</label>
+
+  <span class="starability-focus-ring"></span>
+</fieldset>
+</div>
+  <div class="col-8 offset-2 mt-2">
+  <button class="btn-outline-dark">submit</button>
+  </div>
+  </form>
+ <%}%>
+ 
+<hr>
+<div class="row">
+  <div class="col-8 offset-2">
+    <h2>All Reviews</h2>
+
+    <% for (let review of list.reviews) { %>
+      <div class="card mt-3 shadow-sm">
+        <div class="card-body">
+           <p class="card-text"> @<%= review.author ? review.author.username : "unknown user" %></p>
+          <p class="card-text"><%= review.comment %></p>
+         
+          
+  <p class="starability-result" data-rating= <%= review.rating %>>
+    Rated: 3 stars
+  </p>
+          <div class="mt-2">
+            <form 
+              method="POST" 
+              action="/listing/<%= list._id %>/review/<%= review._id %>?_method=DELETE"
+            >
+              <button class="btn-dark btn-sm">Delete</button>
+            </form>
+          </div>
+        
+        </div>
+      </div>
+    <% } %>
+
+  </div>
+</div>
+
+
+  <script src="/confirm.js"></script>
+</body>

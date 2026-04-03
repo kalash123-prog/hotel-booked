@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom sticky-top">
+  <div class="container-fluid">
+
+    <a class="navbar-brand" href="#"><i class="fa-solid fa-cloud"></i></a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <!-- LEFT SIDE -->
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item">
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/listing">Explore</a>
+        </li>
+        <li class="nav-item">
+        </li>
+      </ul>
+      <div class="ms-auto">
+        <form class="d-flex" role="search" method="post" action="/listing/search">
+        <input class="form-control me-2" type="search" placeholder="Search Destination" aria-label="Search"/ name="location">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+      </div>
+      <!-- RIGHT SIDE -->
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <a class="nav-link" href="/listing/new">Add New Listings</a>
+        <% if(!currentUser){ %>
+          <li class="nav-item">
+            <a class="nav-link" href="/sign"><b>Signup</b></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login"><b>Login</b></a>
+          </li>
+        <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout"><b>Logout</b></a>
+          </li>
+        <% } %>
+
+      </ul>
+
+    </div>
+  </div>
+</nav>

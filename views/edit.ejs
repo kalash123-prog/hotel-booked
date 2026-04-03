@@ -1,0 +1,53 @@
+<% layout("/boilerolate/boilerplate.ejs")%>
+<body>
+ 
+    <form method="post" action="/listing/<%=user._id%>?_method=PATCH" novalidate class="needs-validation" enctype="multipart/form-data">
+       <h1>Edit list</h1>
+     <div class="mb-3">
+  <label for="title" class="form-label">Title:</label>
+  <input type="text" value="<%=user.title%>" name="title" id="title" class="form-control" required>
+  <div class="valid-feedback">Title looks good</div>
+</div>
+
+<div class="mb-3">
+  <label for="description" class="form-label">Description:</label>
+  <textarea 
+    name="description" 
+    id="description" 
+    rows="4"
+    class="form-control" 
+    required>
+    <%=user.description%></textarea>
+ <div class="invalid-feedback">Please enter description</div>
+</div>
+
+  <div class="mb-3 ">
+  <label for="image" class="form-label"> Upload new image: </label>
+  <input type="file" value="<%=user.image.url%>" name="image" id="image" class="form-control" required>
+  <div class="invalid-feedback">Please enter url of image</div>
+</div>
+
+<div class="row">
+  <div class="mb-3 col-4">
+  <label for="price" class="form-label">Price:</label>
+  <input type="text" value="<%=user.price%>" name="price" id="price" class="form-control"required>
+  <div class="invalid-feedback">Please enter valid price</div>
+</div>
+
+<div class="mb-3 col-8">
+  <label for="location" class="form-label">Location:</label>
+  <input type="text" value="<%=user.location%>" name="location" id="location" class="form-control"required>
+  <div class="invalid-feedback">Please enter location</div>
+</div>
+</div>
+
+<div class="mb-3">
+  <label for="country" class="form-label">Country:</label>
+  <input type="text" value="<%=user.country%>" name="country" id="country" class="form-control"required>
+  <div class="invalid-feedback">Please enter country</div>
+</div>
+
+<button class="btn btn-dark">edit</button>
+  
+    </form>
+</body>

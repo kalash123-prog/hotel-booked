@@ -1,0 +1,64 @@
+<% layout("/boilerolate/boilerplate.ejs") %>
+<body>
+  <div class="row">
+    <div class="col-8 offset-2">
+    <h1>Create new list</h1>
+    <form method="post" action="/listing" novalidate class="needs-validation" enctype="multipart/form-data">
+   <div class="mb-3">
+  <label for="title" class="form-label">Title:</label>
+  <input type="text" placeholder="title" name="title" id="title" class="form-control"  required>
+   <div class="valid-feedback">Title looks good</div>
+</div>
+
+<div class="mb-3">
+  <label for="description" class="form-label">Description:</label>
+  <textarea 
+    placeholder="description" 
+    name="description" 
+    id="description" 
+    rows="4"
+    class="form-control" required >
+  
+  </textarea>
+     <div class="invalid-feedback">please enter description</div>
+</div>
+
+  <div class="mb-3 ">
+  <label for="image" class="form-label">Upload image:</label>
+  <input type="file" name="image" id="image" class="form-control" required>
+   <div class="invalid-feedback">please enter image url</div>
+</div>
+
+<div class="row">
+  <div class="mb-3 col-4">
+  <label for="price" class="form-label">Price:</label>
+  <input type="text" placeholder="price" name="price" id="price" class="form-control"  required>
+   <div class="invalid-feedback">please enter price</div>
+</div>
+
+<div class="mb-3 col-8">
+  <label for="location" class="form-label">Location:</label>
+  <input type="text" placeholder="location" name="location" id="location" class="form-control"  required>
+   <div class="invalid-feedback">please enter loaction</div>
+</div>
+</div>
+<div class="mb-3">
+ <label>Category:</label>
+<select name="category" class="form-control">
+  <option value="Rooms">Rooms</option>
+  <option value="Mountains">Mountains</option>
+  <option value="Camping">Camping</option>
+  <option value="Farms">Farms</option>
+</select>
+</div>
+<div class="mb-3">
+  <label for="country" class="form-label">Country:</label>
+  <input type="text" placeholder="country" name="country" id="country" class="form-control"  required>
+   <div class="invalid-feedback">please enter country</div>
+</div>
+
+<button class="btn btn-dark">Create</button>
+    </form>
+    </div>
+    </div>
+</body>

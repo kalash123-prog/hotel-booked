@@ -1,0 +1,94 @@
+<%layout("/boilerolate/boilerplate.ejs")%>
+<body>
+<style>
+  .filters{
+   display:flex;
+   flex-wrap: wrap;
+   
+  }
+  .filter1{
+    text-align: center;
+   margin-right: 3rem;
+   margin-top: 2rem;
+   opacity: 0.7;
+   color:rgb(78, 90, 101);
+  }
+
+  .filter1:hover{
+   opacity: 1;
+   cursor: pointer;
+  }
+ 
+  button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+</style>
+
+<div class="filters">
+
+  <form action="/listing/category" method="POST">
+    <input type="hidden" name="category" value="Rooms">
+    <div class="filter1">
+      <button type="submit">
+        <i class="fa-solid fa-bed"></i>
+        <p>Rooms</p>
+      </button>
+    </div>
+  </form>
+
+  <form action="/listing/category" method="POST">
+    <input type="hidden" name="category" value="Mountains">
+    <div class="filter1">
+      <button type="submit">
+        <i class="fa-solid fa-mountain"></i>
+        <p>Mountains</p>
+      </button>
+    </div>
+  </form>
+
+  <form action="/listing/category" method="POST">
+      <input type="hidden" name="category" value="Camping">
+    <div class="filter1">
+      <button type="submit">
+        <i class="fa-solid fa-tent"></i>
+        <p>Camping</p>
+      </button>
+    </div>
+  </form>
+
+  <form action="/listing/category" method="POST">
+      <input type="hidden" name="category" value="Farms">
+    <div class="filter1">
+      <button type="submit">
+        <i class="fa-solid fa-warehouse"></i>
+        <p>Farms</p>
+      </button>
+    </div>
+  </form>
+
+</div>
+
+  
+    <div class="row row-cols-lg-4 row-cols-md-2 row-cols-sm-1 mt-3">
+    <%  for(let listing of listings){%>
+       <a href="/listing/<%=listing._id%>"> 
+    <div class="card" style="width: 18rem;" >
+  <img src="<%=listing.image.url%>" class="card-img-top" alt="listing_image" style="height:20rem;">
+  <div class="card-body">
+    <h5 class="card-title"><%=listing.title%></h5>
+   <p class="card-text">
+₹ <%= listing.price ? listing.price.toLocaleString("en-IN") : "0" %>
+</p>
+  </div>
+</div>
+       </a>
+ <%   }%>
+</div>
+ 
+</body>

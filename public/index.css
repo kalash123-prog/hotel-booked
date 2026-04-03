@@ -1,0 +1,99 @@
+body{
+background-color: lightgreen;
+}
+
+.navbar{
+    height:4rem;
+    color:black !important;
+}
+.fa-solid fa-cloud{
+    color: red;
+    font-size:2rem;
+}
+
+.cardnew{
+    text-decoration:none !important;
+    margin-bottom: 2rem !important;
+    border-radius: 2rem !important;
+
+}
+.card-body{
+padding: 0 !important;
+}
+
+.card-img-top{
+    opacity: 1;
+}
+.card-img-top:hover{
+opacity: 0.1 !important;
+background-color: white !important;
+}
+
+.image{
+    height: 500px;
+    width: 500px;
+     overflow: hidden;
+}
+
+.image img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 2rem;
+}
+
+.cards{
+    padding-left:1rem;
+}
+
+.contain{
+    margin-top:1rem;
+    text-align: center;
+  /* display:flex;
+    /*justify-content: center;  */
+    /* align-items: center;    */
+    background-color: #F5C1C5;
+    height:200px;
+    align-content: center;
+}
+
+
+.img{
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+.private{
+    display:flex;
+   justify-content: center;
+}
+
+.details{
+    text-decoration: none !important;
+    margin-left:10px;
+    color: black;
+}
+
+.details1{
+    text-decoration: none !important;
+    margin-left:10px;
+    color: black;
+}
+
+.details1:hover{
+    color: blue;
+}
+
+.details:hover{
+    color: blue;
+}
+.first {
+     text-decoration: none !important;
+}
+.second{
+     text-decoration: none !important;
+}
+
+card-img-top{
+    object-fit: cover;
+}
