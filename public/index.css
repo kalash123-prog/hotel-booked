@@ -1,99 +1,452 @@
-body{
-background-color: lightgreen;
+/* ==================== LUXURY COLOR SCHEME ==================== */
+:root {
+    --primary-color: #1a365d;
+    --primary-dark: #0f1f3c;
+    --secondary-color: #8b7355;
+    --accent-color: #c9a961;
+    --danger-color: #d32f2f;
+    --dark-bg: #f5f3f0;
+    --light-bg: #faf9f7;
+    --card-bg: #ffffff;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --border-color: #e8e6e1;
+    --success-color: #27ae60;
 }
 
-.navbar{
-    height:4rem;
-    color:black !important;
-}
-.fa-solid fa-cloud{
-    color: red;
-    font-size:2rem;
+/* ==================== GLOBAL STYLES ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.cardnew{
-    text-decoration:none !important;
-    margin-bottom: 2rem !important;
-    border-radius: 2rem !important;
-
-}
-.card-body{
-padding: 0 !important;
+html {
+    scroll-behavior: smooth;
 }
 
-.card-img-top{
+body {
+    background: linear-gradient(to bottom, #faf9f7 0%, #f3f1ed 100%);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==================== NAVBAR STYLES ==================== */
+.navbar {
+    background: linear-gradient(135deg, #1a365d 0%, #2d5a7b 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: auto;
+    min-height: 70px;
+    border-bottom: 1px solid rgba(201, 169, 97, 0.2);
+}
+
+.navbar-brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff !important;
+    letter-spacing: 0.5px;
+}
+
+.navbar-brand:hover {
+    color: #c9a961 !important;
+}
+
+.nav-link {
+    color: #d4d0cc !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin: 0 0.25rem;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.95rem;
+}
+
+.nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(201, 169, 97, 0.1);
+}
+
+.nav-link.active {
+    color: #c9a961 !important;
+    border-bottom: 2px solid #c9a961;
+}
+
+/* ==================== CONTAINER & LAYOUT ==================== */
+.container {
+    flex: 1;
+    padding: 2rem 1rem;
+}
+
+/* ==================== FILTER SECTION ==================== */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 2rem 0;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
+}
+
+.filter1 {
+    text-align: center;
+    opacity: 0.75;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: 0.4rem;
+}
+
+.filter1:hover {
     opacity: 1;
-}
-.card-img-top:hover{
-opacity: 0.1 !important;
-background-color: white !important;
+    background: var(--light-bg);
+    color: var(--primary-color);
+    transform: translateY(-2px);
 }
 
-.image{
+.filter1 i {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: inherit;
+}
+
+.filter1 p {
+    margin: 0;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.filter1 button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* ==================== CARD STYLES ==================== */
+.cardnew {
+    text-decoration: none !important;
+    margin-bottom: 2rem;
+    display: block;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    background: var(--card-bg);
+    height: 100%;
+}
+
+.cardnew:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-img-top {
+    height: 250px;
+    width: 100%;
+    object-fit: cover;
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    background: linear-gradient(135deg, #e8e6e1 0%, #f5f3f0 100%);
+}
+
+.cardnew:hover .card-img-top {
+    opacity: 0.95;
+    transform: scale(1.03);
+}
+
+.card-body {
+    padding: 1.25rem !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: auto;
+}
+
+.card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+/* ==================== PRICE & RATING ==================== */
+.price-tag {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0.5rem 0;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.rating .stars {
+    color: var(--accent-color);
+}
+
+.rating .count {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* ==================== IMAGE CONTAINER ==================== */
+.image {
     height: 500px;
-    width: 500px;
-     overflow: hidden;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-.image img{
+.image img {
     height: 100%;
     width: 100%;
     object-fit: cover;
-    border-radius: 2rem;
+    transition: transform 0.3s ease;
 }
 
-.cards{
-    padding-left:1rem;
+.image:hover img {
+    transform: scale(1.05);
 }
 
-.contain{
-    margin-top:1rem;
+/* ==================== CONTAIN SECTION (Info Box) ==================== */
+.contain {
+    margin-top: 1.5rem;
+    padding: 2rem;
     text-align: center;
-  /* display:flex;
-    /*justify-content: center;  */
-    /* align-items: center;    */
-    background-color: #F5C1C5;
-    height:200px;
-    align-content: center;
+    background: linear-gradient(135deg, #f5f3f0 0%, #faf9f7 100%);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
 }
 
-
-.img{
-    font-size: 20px;
-    margin: 10px 0;
+.contain:hover {
+    box-shadow: 0 6px 16px rgba(26, 54, 93, 0.1);
 }
 
-.private{
-    display:flex;
-   justify-content: center;
+.contain h3 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
 }
 
-.details{
+.contain p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* ==================== TEXT & LINKS ==================== */
+.details, .details1 {
     text-decoration: none !important;
-    margin-left:10px;
-    color: black;
+    color: var(--primary-color);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    word-break: break-word;
 }
 
-.details1{
+.details:hover, .details1:hover {
+    color: var(--primary-dark);
+    text-decoration: underline !important;
+}
+
+.img {
+    font-size: 1.2rem;
+    margin: 0.75rem 0;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+.private {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.first, .second {
     text-decoration: none !important;
-    margin-left:10px;
-    color: black;
+    color: inherit;
 }
 
-.details1:hover{
-    color: blue;
+/* ==================== FORM STYLES ==================== */
+.form-control, .form-select {
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
 }
 
-.details:hover{
-    color: blue;
-}
-.first {
-     text-decoration: none !important;
-}
-.second{
-     text-decoration: none !important;
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-card-img-top{
-    object-fit: cover;
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+/* ==================== BUTTON STYLES ==================== */
+.btn {
+    border-radius: 0.4rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.65rem 1.25rem;
+    border: none;
+    font-size: 0.95rem;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    box-shadow: 0 6px 16px rgba(26, 54, 93, 0.25);
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover {
+    background: #229954;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b71c1c;
+}
+
+.btn-secondary {
+    background: var(--text-secondary);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: var(--text-primary);
+}
+
+/* ==================== FOOTER STYLES ==================== */
+footer {
+    background: linear-gradient(135deg, #1a365d 0%, #2d5a7b 100%);
+    color: #d4d0cc;
+    margin-top: auto;
+    padding: 3rem 2rem 2rem;
+    border-top: 1px solid rgba(201, 169, 97, 0.2);
+}
+
+footer a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: #c9a961;
+    text-decoration: underline;
+}
+
+footer h5 {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+    .filters {
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .filter1 {
+        padding: 0.75rem;
+    }
+
+    .container {
+        padding: 1rem 0.5rem;
+    }
+
+    .card-body {
+        padding: 1rem !important;
+    }
+
+    .navbar {
+        min-height: 60px;
+    }
+
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+
+    .price-tag {
+        font-size: 1.25rem;
+    }
+}
+
+/* ==================== ANIMATION CLASSES ==================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease;
 }

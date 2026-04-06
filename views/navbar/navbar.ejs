@@ -1,47 +1,76 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom sticky-top">
+<nav class="navbar navbar-expand-lg sticky-top">
   <div class="container-fluid">
+    <!-- Brand -->
+    <a class="navbar-brand" href="/listing">
+      <i class="fa-solid fa-hotel me-2"></i><strong>StayHub</strong>
+    </a>
 
-    <a class="navbar-brand" href="#"><i class="fa-solid fa-cloud"></i></a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent">
+    <!-- Toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
       <span class="navbar-toggler-icon"></span>
     </button>
 
+    <!-- Navbar content -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-      <!-- LEFT SIDE -->
-      <ul class="navbar-nav mb-2 mb-lg-0">
+      
+      <!-- LEFT SIDE - Explore -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/listing">Explore</a>
-        </li>
-        <li class="nav-item">
+          <a class="nav-link" href="/listing">
+            <i class="fa-solid fa-compass me-1"></i>Explore
+          </a>
         </li>
       </ul>
-      <div class="ms-auto">
+
+      <!-- CENTER - Search -->
+      <div class="mx-auto" style="flex: 1; max-width: 300px;">
         <form class="d-flex" role="search" method="post" action="/listing/search">
-        <input class="form-control me-2" type="search" placeholder="Search Destination" aria-label="Search"/ name="location">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+          <div class="input-group">
+            <span class="input-group-text" style="background: none; border: 1px solid rgba(255,255,255,0.3); color: #cbd5e1;">
+              <i class="fa-solid fa-search"></i>
+            </span>
+            <input 
+              class="form-control" 
+              type="search" 
+              placeholder="Search destination..." 
+              name="location"
+              style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #e0f2fe;"
+            />
+          </div>
+        </form>
       </div>
-      <!-- RIGHT SIDE -->
+
+      <!-- RIGHT SIDE - User Actions -->
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <a class="nav-link" href="/listing/new">Add New Listings</a>
+        <li class="nav-item">
+          <a class="nav-link" href="/listing/new">
+            <i class="fa-solid fa-plus me-1"></i>Add Listing
+          </a>
+        </li>
+        
         <% if(!currentUser){ %>
           <li class="nav-item">
-            <a class="nav-link" href="/sign"><b>Signup</b></a>
+            <a class="nav-link" href="/sign">
+              <i class="fa-solid fa-user-plus me-1"></i>Sign Up
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/login"><b>Login</b></a>
+            <a class="nav-link" href="/login">
+              <i class="fa-solid fa-sign-in-alt me-1"></i>Login
+            </a>
           </li>
         <% } else { %>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout"><b>Logout</b></a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="fa-solid fa-user-circle me-1"></i><%= currentUser.username %>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="/listing">My Listings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/logout">Logout</a></li>
+            </ul>
           </li>
         <% } %>
-
       </ul>
 
     </div>

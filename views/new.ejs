@@ -1,64 +1,156 @@
 <% layout("/boilerolate/boilerplate.ejs") %>
-<body>
-  <div class="row">
-    <div class="col-8 offset-2">
-    <h1>Create new list</h1>
-    <form method="post" action="/listing" novalidate class="needs-validation" enctype="multipart/form-data">
-   <div class="mb-3">
-  <label for="title" class="form-label">Title:</label>
-  <input type="text" placeholder="title" name="title" id="title" class="form-control"  required>
-   <div class="valid-feedback">Title looks good</div>
-</div>
 
-<div class="mb-3">
-  <label for="description" class="form-label">Description:</label>
-  <textarea 
-    placeholder="description" 
-    name="description" 
-    id="description" 
-    rows="4"
-    class="form-control" required >
-  
-  </textarea>
-     <div class="invalid-feedback">please enter description</div>
-</div>
-
-  <div class="mb-3 ">
-  <label for="image" class="form-label">Upload image:</label>
-  <input type="file" name="image" id="image" class="form-control" required>
-   <div class="invalid-feedback">please enter image url</div>
-</div>
-
-<div class="row">
-  <div class="mb-3 col-4">
-  <label for="price" class="form-label">Price:</label>
-  <input type="text" placeholder="price" name="price" id="price" class="form-control"  required>
-   <div class="invalid-feedback">please enter price</div>
-</div>
-
-<div class="mb-3 col-8">
-  <label for="location" class="form-label">Location:</label>
-  <input type="text" placeholder="location" name="location" id="location" class="form-control"  required>
-   <div class="invalid-feedback">please enter loaction</div>
-</div>
-</div>
-<div class="mb-3">
- <label>Category:</label>
-<select name="category" class="form-control">
-  <option value="Rooms">Rooms</option>
-  <option value="Mountains">Mountains</option>
-  <option value="Camping">Camping</option>
-  <option value="Farms">Farms</option>
-</select>
-</div>
-<div class="mb-3">
-  <label for="country" class="form-label">Country:</label>
-  <input type="text" placeholder="country" name="country" id="country" class="form-control"  required>
-   <div class="invalid-feedback">please enter country</div>
-</div>
-
-<button class="btn btn-dark">Create</button>
-    </form>
+<!-- Page Header -->
+<div class="row mt-4">
+  <div class="col-lg-8 offset-lg-2">
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">
+        <i class="fa-solid fa-plus-circle me-2" style="color: var(--primary-color);"></i>Create New Listing
+      </h1>
+      <p style="color: var(--text-secondary);">Share your property with travelers from around the world</p>
     </div>
+  </div>
+</div>
+
+<!-- Form -->
+<div class="row mb-5">
+  <div class="col-lg-8 offset-lg-2">
+    <div class="card border-0" style="box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
+      <div class="card-body p-4">
+        <form method="post" action="/listing" novalidate class="needs-validation" enctype="multipart/form-data">
+          
+          <!-- Title -->
+          <div class="mb-4">
+            <label for="title" class="form-label">
+              <i class="fa-solid fa-heading me-2" style="color: var(--primary-color);"></i>Listing Title
+            </label>
+            <input 
+              type="text" 
+              placeholder="e.g., Cozy Apartment in Downtown" 
+              name="title" 
+              id="title" 
+              class="form-control" 
+              required
+            />
+            <div class="valid-feedback">Title looks good!</div>
+            <div class="invalid-feedback">Please enter a title.</div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <label for="description" class="form-label">
+              <i class="fa-solid fa-file-lines me-2" style="color: var(--primary-color);"></i>Description
+            </label>
+            <textarea 
+              placeholder="Describe your property in detail..." 
+              name="description" 
+              id="description" 
+              rows="5"
+              class="form-control" 
+              required
+            ></textarea>
+            <div class="invalid-feedback">Please enter a description.</div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="mb-4">
+            <label for="image" class="form-label">
+              <i class="fa-solid fa-image me-2" style="color: var(--primary-color);"></i>Upload Image
+            </label>
+            <div class="input-group">
+              <input 
+                type="file" 
+                name="image" 
+                id="image" 
+                class="form-control" 
+                accept="image/*"
+                required
+              />
+            </div>
+            <small class="text-muted d-block mt-2">
+              <i class="fa-solid fa-info-circle me-1"></i>
+              JPG, PNG or WebP. Max 5MB.
+            </small>
+            <div class="invalid-feedback">Please select an image.</div>
+          </div>
+
+          <!-- Two Column Layout -->
+          <div class="row">
+            <!-- Price -->
+            <div class="col-md-6 mb-4">
+              <label for="price" class="form-label">
+                <i class="fa-solid fa-money-bill me-2" style="color: var(--primary-color);"></i>Price per Night (₹)
+              </label>
+              <input 
+                type="number" 
+                placeholder="e.g., 1000" 
+                name="price" 
+                id="price" 
+                class="form-control" 
+                required
+              />
+              <div class="invalid-feedback">Please enter a valid price.</div>
+            </div>
+
+            <!-- Category -->
+            <div class="col-md-6 mb-4">
+              <label for="category" class="form-label">
+                <i class="fa-solid fa-tag me-2" style="color: var(--primary-color);"></i>Category
+              </label>
+              <select name="category" id="category" class="form-select" required>
+                <option value="" selected disabled>Select a category</option>
+                <option value="Rooms">Rooms</option>
+                <option value="Mountains">Mountains</option>
+                <option value="Camping">Camping</option>
+                <option value="Farms">Farms</option>
+              </select>
+              <div class="invalid-feedback">Please select a category.</div>
+            </div>
+          </div>
+
+          <!-- Location & Country -->
+          <div class="row">
+            <!-- Location -->
+            <div class="col-md-6 mb-4">
+              <label for="location" class="form-label">
+                <i class="fa-solid fa-location-dot me-2" style="color: var(--primary-color);"></i>Location
+              </label>
+              <input 
+                type="text" 
+                placeholder="e.g., New York, Manhattan" 
+                name="location" 
+                id="location" 
+                class="form-control" 
+                required
+              />
+              <div class="invalid-feedback">Please enter a location.</div>
+            </div>
+
+            <!-- Country -->
+            <div class="col-md-6 mb-4">
+              <label for="country" class="form-label">
+                <i class="fa-solid fa-globe me-2" style="color: var(--primary-color);"></i>Country
+              </label>
+              <input 
+                type="text" 
+                placeholder="e.g., United States" 
+                name="country" 
+                id="country" 
+                class="form-control" 
+                required
+              />
+              <div class="invalid-feedback">Please enter a country.</div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary btn-lg" style="font-weight: 600;">
+              <i class="fa-solid fa-paper-plane me-2"></i>Publish Listing
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-</body>
+  </div>
+</div>

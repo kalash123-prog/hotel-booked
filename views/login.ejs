@@ -1,21 +1,72 @@
 <% layout("/boilerolate/boilerplate.ejs") %>
 
-<div class="row mt-3">
-    <h1 class="col-6 offset-3">Login</h1>
-<form method="post" action="/login"  novalidate class="needs-validation">
-  <div class="col-6 offset-3">
-  
- <div class="mb-3">
-  <label for="username" class="form-label">Username</label>
-  <input type="text" placeholder="username" name="username" id="username" class="form-control"  required>
-</div>
+<div class="row justify-content-center mt-5 mb-5">
+  <div class="col-md-5 col-lg-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">
+        <i class="fa-solid fa-hotel" style="color: var(--primary-color);"></i>
+      </div>
+      <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary);">
+        Welcome Back
+      </h1>
+      <p style="color: var(--text-secondary); margin-bottom: 0;">
+        Sign in to your StayHub account
+      </p>
+    </div>
 
-<div class="mb-3">
-  <label for="password" class="form-label">Password</label>
-  <input type="password" placeholder="password" name="password" id="password" class="form-control"  required>
-</div>
-<button class="btn btn-success">login</button>
-</div>
+    <!-- Login Form -->
+    <div class="card border-0" style="box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
+      <div class="card-body p-4">
+        <form method="post" action="/login" novalidate class="needs-validation">
+          <!-- Username Field -->
+          <div class="mb-3">
+            <label for="username" class="form-label">
+              <i class="fa-solid fa-user me-2" style="color: var(--primary-color);"></i>Username
+            </label>
+            <input 
+              type="text" 
+              placeholder="Enter your username" 
+              name="username" 
+              id="username" 
+              class="form-control" 
+              required
+            />
+            <div class="invalid-feedback">Please enter your username.</div>
+          </div>
 
-</form>
+          <!-- Password Field -->
+          <div class="mb-4">
+            <label for="password" class="form-label">
+              <i class="fa-solid fa-lock me-2" style="color: var(--primary-color);"></i>Password
+            </label>
+            <input 
+              type="password" 
+              placeholder="Enter your password" 
+              name="password" 
+              id="password" 
+              class="form-control" 
+              required
+            />
+            <div class="invalid-feedback">Please enter your password.</div>
+          </div>
+
+          <!-- Login Button -->
+          <button type="submit" class="btn btn-primary w-100" style="padding: 0.75rem; font-weight: 600;">
+            <i class="fa-solid fa-sign-in-alt me-2"></i>Sign In
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Sign Up Link -->
+    <div class="text-center mt-4">
+      <p style="color: var(--text-secondary);">
+        Don't have an account?
+        <a href="/sign" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">
+          Sign up here
+        </a>
+      </p>
+    </div>
+  </div>
 </div>
