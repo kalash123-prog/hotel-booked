@@ -1,0 +1,92 @@
+<% layout("/boilerolate/boilerplate.ejs") %>
+
+<div class="container mt-4">
+  <h2 class="mb-4">Request to book</h2>
+
+  <div class="row">
+
+    <!-- LEFT SIDE -->
+    <div class="col-md-7">
+      <div class="card p-4 shadow-sm border-0">
+        
+        <h5 class="mb-3">Message the host</h5>
+        
+        <div class="d-flex align-items-center mb-3">
+          <i class="fa-solid fa-user-circle fa-2x me-2"></i>
+          <div>
+            <strong><%= list.owner.username %></strong><br>
+            <small class="text-muted">Hosting</small>
+          </div>
+        </div>
+
+        <textarea 
+          class="form-control mb-3" 
+          rows="4"
+          placeholder="Tell the host about your trip..."
+        ></textarea>
+
+        <hr>
+
+        <p class="text-muted small">
+          You’ll be redirected to complete payment securely.
+        </p>
+
+        <form action="/create-checkout-session" method="POST">
+          <input type="hidden" name="listingId" value="<%= list._id %>">
+          <input type="hidden" name="checkIn" value="<%= checkIn %>">
+          <input type="hidden" name="checkOut" value="<%= checkOut %>">
+          <input type="hidden" name="guests" value="<%= guests %>">
+
+          <button class="btn btn-dark w-100 py-2">
+            Continue to Payment 💳
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="col-md-5">
+      <div class="card p-3 shadow-sm border-0 sticky-top" style="top: 100px;">
+
+        <h5 class="mb-3"><%= list.title %></h5>
+
+        <p class="mb-2">
+          📅 <strong><%= checkIn %></strong> → <strong><%= checkOut %></strong>
+        </p>
+
+        <p class="mb-2">
+          👥 Guests: <strong><%= guests %></strong>
+        </p>
+
+        <hr>
+
+        <% 
+          const nights = Math.ceil(
+            (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)
+          );
+          const total = nights * list.price;
+        %>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span>₹<%= list.price %> × <%= nights %> nights</span>
+          <span>₹<%= total %></span>
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span>Taxes</span>
+          <span>₹<%= Math.round(total * 0.18) %></span>
+        </div>
+
+        <hr>
+
+        <div class="d-flex justify-content-between fw-bold">
+          <span>Total</span>
+          <span>₹<%= total + Math.round(total * 0.18) %></span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

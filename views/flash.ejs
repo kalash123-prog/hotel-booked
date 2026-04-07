@@ -1,6 +1,25 @@
-<%if(success && success.length){%>
-<div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert" >
-    <%=success%>
+<% if(success && success.length > 0) { %>
+  <div class="alert alert-success text-center alert-dismissible fade show" role="alert">
+    <%= success %>
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-<%}%>
+  </div>
+<% } %>
+
+<% if(error && error.length > 0) { %>
+  <div class="alert alert-danger text-center alert-dismissible fade show" role="alert">
+    <%= error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<script>
+  // auto hide after 3 seconds
+  setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      alert.classList.remove('show');
+      alert.classList.add('fade');
+      setTimeout(() => alert.remove(), 500);
+    });
+  }, 3000);
+</script>

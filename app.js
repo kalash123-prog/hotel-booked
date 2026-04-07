@@ -18,6 +18,8 @@ const passportlocal=require("passport-local");
 const User=require("./schema/user.js");
 const middleware=require("./utilities/middleware.js");
 const {saveredirecturl,author}=require("./utilities/middleware.js");
+const Booking = require("./schema/booking.js");
+const Razorpay = require("razorpay");
 const multer = require('multer'); //this multer package is used to parse or get files from form because we cannot store files from form
 const {storage}=require("./configure.js");
 const upload = multer({storage});//this will upload files from form to this file 'uploads/'.
@@ -188,16 +190,74 @@ app.get("/listing",wrapasync(async(req,res)=>{
 app.get("/listing/new",middleware,(req,res)=>{
    res.render("new.ejs");
 });
+app.post("/create-checkout-session", async (req, res) => {
+  const { listingId, checkIn, checkOut, guests } = req.body;
+
+  const list = await listing.findById(listingId);
+
+  const nights = Math.ceil(
+    (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)
+  );
+
+  const total = nights * list.price * 100; // Razorpay uses paise
+
+  const options = {
+    amount: total,
+    currency: "INR",
+    receipt: "order_rcptid_11",
+  };
+
+  const order = await razorpay.orders.create(options);
+
+  res.render("payment.ejs", {
+    order,
+    list,
+    checkIn,
+    checkOut,
+    guests,
+    total
+  });
+});
+app.get("/payment-success", async (req, res) => {
+  const { listingId, checkIn, checkOut, guests } = req.query;
+
+  await Booking.create({
+    room: listingId,
+    user: req.user._id,
+    checkIn,
+    checkOut,
+    guests
+  });
+
+  req.flash("success", "Payment successful & booking confirmed 🎉");
+  res.redirect(`/listing/${listingId}`);
+});
+
 //show route
-app.get("/listing/:id",wrapasync(async(req,res)=>{
-    let {id}=req.params;
- let list= await listing.findById(id).populate({path:"reviews",
-    populate:{
-    path:"author",
- }}).populate("owner");//.populate() is used to replace ObjectIds with actual data from another collection.
- console.log(list);
- res.render("show.ejs",{list});
+app.get("/listing/:id", wrapasync(async (req, res) => {
+  let { id } = req.params;
+
+  let list = await listing.findById(id)
+    .populate("owner")
+    .populate({
+      path: "reviews",
+      populate: { path: "author" }
+    });
+
+  // 🔥 Get bookings
+  let bookings = await Booking.find({ room: id });
+
+  res.render("show.ejs", { list, bookings });
 }));
+// app.get("/listing/:id",wrapasync(async(req,res)=>{
+//     let {id}=req.params;
+//  let list= await listing.findById(id).populate({path:"reviews",
+//     populate:{
+//     path:"author",
+//  }}).populate("owner");//.populate() is used to replace ObjectIds with actual data from another collection.
+//  console.log(list);
+//  res.render("show.ejs",{list});
+// }));
 
 app.post("/listing",upload.single("image"),wrapasync(async(req,res)=>{//upload.single("image") this is used to upload files on uploads
  let {title,description,price,image,location,country,category}=req.body;
@@ -219,6 +279,67 @@ await newuser.save();
 req.flash("success","new listing added"); //this is "new listing added" temopary storage means in session then it is called to /listing ,so now express will run from top to bottom so it will find middleware where req.flash take msg from tempory storwge and save it to success varible and send it to ejs file using  locals
 res.redirect("/listing");//Flash = message that stays for one request only
 
+}));
+
+
+
+app.post("/listing/:id/book", middleware, wrapasync(async (req, res) => {
+  const { id } = req.params;
+  let { checkIn, checkOut, guests } = req.body;
+
+  checkIn = new Date(checkIn);
+  checkOut = new Date(checkOut);
+
+  const list = await listing.findById(id);
+
+  // ✅ Guest validation
+  if (guests > list.maxGuests) {
+    req.flash("error", "Exceeds maximum guest limit ❌");
+    return res.redirect(`/listing/${id}`);
+  }
+
+  // 🔒 Check double booking
+  const conflict = await Booking.findOne({
+    room: id,
+    checkIn: { $lt: checkOut },
+    checkOut: { $gt: checkIn },
+  });
+
+  if (conflict) {
+    req.flash("error", "Room already booked for selected dates ❌");
+    return res.redirect(`/listing/${id}`);
+  }
+
+  // ✅ Create booking
+  await Booking.create({
+    room: id,
+    user: req.user._id,
+    checkIn,
+    checkOut,
+    guests,
+  });
+
+  req.flash("success", "Room booked successfully ✅");
+  res.redirect(`/listing/${id}`);
+}));
+
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+app.get("/request-book/:id", middleware, wrapasync(async (req, res) => {
+  const { id } = req.params;
+  const { checkIn, checkOut, guests } = req.query;
+
+  const list = await listing.findById(id).populate("owner");
+
+  res.render("request.ejs", {
+    list,
+    checkIn,
+    checkOut,
+    guests
+  });
 }));
 
 app.get("/listing/:id/edit",middleware,wrapasync(async(req,res)=>{

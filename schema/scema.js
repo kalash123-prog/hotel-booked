@@ -38,7 +38,19 @@ const hotelschema=mongoose.Schema({
     type: String,
     enum: ["Rooms", "Mountains", "Camping", "Farms"],
     default: "Rooms"
-  }
+  },
+  maxGuests: {
+  type: Number,
+  default: 5,
+},
+geometry: {
+  type: {
+    type: String,
+    enum: ["Point"],
+    default: "Point"
+  },
+  coordinates: [Number] // [lng, lat]
+}
 });
 
 
