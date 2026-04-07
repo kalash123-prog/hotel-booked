@@ -362,4 +362,5 @@ Once deployed:
 - **Session Issues**: Ensure SESSION_SECRET is set
 - **View Rendering Issues**: Verify EJS files are in views directory
 
-Latest Commit Hash: 56a60cbf25c77959a263b6bac3867eb6dffff47b
+Latest Commit Hash: 56a60cbf25c77959a263b6bac3867eb6dffff47b#   h o t e l - b o o k i n g - s y s t e m  
+ 
