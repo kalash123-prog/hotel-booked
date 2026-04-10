@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "v24.13.0"
+  },
   "name": "hotel-booking-system-project-one",
   "version": "1.0.0",
   "description": "",
@@ -13,12 +16,14 @@
   "dependencies": {
     "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",
+    "connect-mongo": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.3.1",
     "ejs": "^4.0.1",
     "ejs-mate": "^4.0.0",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "flatpickr": "^4.6.13",
     "joi": "^18.0.2",
     "method": "^2.0.0",
     "method-override": "^3.0.0",

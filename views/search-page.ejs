@@ -1,0 +1,102 @@
+<% layout("/boilerolate/boilerplate.ejs") %>
+<div class="container">
+  <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    
+    <div class="col-md-6 col-lg-5">
+      
+      <div class="card shadow p-4 border-0">
+        
+        <h4 class="text-center mb-4 fw-bold">🔍 Search Listings</h4>
+
+        <form action="/listing/search" method="POST" validate class="needs validation">
+
+          <!-- LOCATION -->
+          <div class="mb-3">
+            <label class="form-label">Location</label>
+            <input 
+              type="text" 
+              name="location" 
+              class="form-control" 
+              placeholder="Where are you going?"
+              required
+            >
+            <div class="invalid feedback">Please enter location</div>
+          </div>
+
+          <!-- PRICE RANGE -->
+          <div class="mb-3">
+            <label class="form-label">Price Range</label>
+            <div class="row g-2">
+              <div class="col">
+                <input 
+                  type="number" 
+                  name="minPrice" 
+                  class="form-control" 
+                  placeholder="Min"
+                  required
+                >
+                <div class="invalid feedback">Please enter minimum price</div>
+              </div>
+              <div class="col">
+                <input 
+                  type="number" 
+                  name="maxPrice" 
+                  class="form-control" 
+                  placeholder="Max"
+                  required
+                >
+                <div class="invalid feedback">Please enter maximum price</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CATEGORY -->
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-control">
+              <option value="Rooms">Rooms</option>
+              <option value="Mountains">Mountains</option>
+              <option value="Camping">Camping</option>
+              <option value="Farms">Farms</option>
+            </select>
+          </div>
+
+          <!-- DATES -->
+          <div class="mb-3">
+  <label class="form-label">Stay Dates</label>
+  <div class="row g-2">
+    <div class="col">
+      <input type="date" name="checkIn" id="checkIn" class="form-control" required>
+      <div class="invalid feedback">Please enter check-in date</div>
+    </div>
+    <div class="col">
+      <input type="date" name="checkOut" id="checkOut" class="form-control" required>
+      <div class="invalid feedback">Please enter check-out date</div>
+    </div>
+  </div>
+</div>
+
+          <!-- BUTTON -->
+          <button class="btn btn-primary w-100">
+            <i class="fa-solid fa-magnifying-glass me-2"></i>Search
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<script>
+  const today = new Date().toISOString().split("T")[0];
+
+  document.getElementById("checkIn").setAttribute("min", today);
+  document.getElementById("checkOut").setAttribute("min", today);
+
+  // Optional: ensure checkout is always after checkin
+  document.getElementById("checkIn").addEventListener("change", function () {
+    document.getElementById("checkOut").min = this.value;
+  });
+</script>

@@ -100,7 +100,7 @@
     👥 Max Guests
   </span>
   <p class="mb-0" style="font-weight: 600;">
-    <%= list.maxGuests || 5 %> guests
+    <%= list.maxGuests || 15 %> guests
   </p>
 </div>
 
@@ -118,16 +118,10 @@
  
 
 <form action="/request-book/<%= list._id %>" method="GET">
-    
-    <div class="mb-2">
-      <label class="form-label">Check In</label>
-      <input type="date" name="checkIn" class="form-control" required>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Check Out</label>
-      <input type="date" name="checkOut" class="form-control" required>
-    </div>
+    <label class="form-label">checkIn</label>
+<input type="hidden" name="checkIn" id="checkIn">
+<label class="form-label">checkOut</label>
+<input type="hidden" name="checkOut" id="checkOut">
 
     <div class="mb-3">
       <label class="form-label">Guests</label>
@@ -136,7 +130,7 @@
         name="guests" 
         class="form-control" 
         min="1" 
-        max="<%= list.maxGuests || 5 %>" 
+        max="<%= list.maxGuests || 15 %>" 
         required
       >
     </div>
@@ -147,8 +141,6 @@
 
 </form>
 
-
-    
   
             <% } else if(currentUser) { %>
               <form action="/listing/payment" method="get">
@@ -283,6 +275,32 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
+ 
+  const bookedDates = <%- JSON.stringify(bookedDates || []) %>;
+
+  console.log("Booked Dates:", bookedDates);
+
+  function isDateBooked(date) {
+    return bookedDates.some(range => {
+      let from = new Date(range.from);
+      let to = new Date(range.to);
+      return date >= from && date < to;
+    });
+  }
+
+  let checkInPicker = flatpickr("#checkIn", {
+    minDate: "today",
+    disable: [date => isDateBooked(date)],
+    onChange: function(selectedDates) {
+      checkOutPicker.set("minDate", selectedDates[0]);
+    }
+  });
+
+  let checkOutPicker = flatpickr("#checkOut", {
+    minDate: "today",
+    disable: [date => isDateBooked(date)]
+  });
+
   // =========================
   // ✅ MAP CODE (FIXED)
   // =========================
@@ -306,6 +324,28 @@
           .openPopup();
       }
     });
+ 
+  const today = new Date().toISOString().split("T")[0];
+
+  const checkIn = document.getElementById("checkIn");
+  const checkOut = document.getElementById("checkOut");
+
+  checkIn.min = today;
+  checkOut.min = today;
+
+  checkIn.addEventListener("change", function () {
+    checkOut.min = this.value;
+  });
+
+  document.querySelector("form").addEventListener("submit", function (e) {
+
+    // ✅ allow same-day booking
+    if (checkOut.value < checkIn.value) {
+      e.preventDefault();
+      alert("Check-out cannot be before Check-in");
+    }
+
+  });
 
  
 </script>

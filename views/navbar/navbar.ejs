@@ -24,20 +24,20 @@
 
       <!-- CENTER - Search -->
       <div class="mx-auto" style="flex: 1; max-width: 300px;">
-        <form class="d-flex" role="search" method="post" action="/listing/search">
-          <div class="input-group">
-            <span class="input-group-text" style="background: none; border: 1px solid rgba(255,255,255,0.3); color: #cbd5e1;">
-              <i class="fa-solid fa-search"></i>
-            </span>
-            <input 
-              class="form-control" 
-              type="search" 
-              placeholder="Search destination..." 
-              name="location"
-              style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #e0f2fe;"
-            />
-          </div>
-        </form>
+        <form class="d-flex" role="search" method="GET" action="/listing/search-page">
+  <div class="input-group">
+    <span class="input-group-text" style="background: none; border: 1px solid rgba(255,255,255,0.3); color: #cbd5e1;">
+      <i class="fa-solid fa-search"></i>
+    </span>
+    <input 
+      class="form-control" 
+      type="search" 
+      placeholder="Search destination..." 
+      name="location"
+      style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #e0f2fe;"
+    />
+  </div>
+</form>
       </div>
 
       <!-- RIGHT SIDE - User Actions -->
@@ -65,7 +65,7 @@
               <i class="fa-solid fa-user-circle me-1"></i><%= currentUser.username %>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="/listing">My Listings</a></li>
+              <li><a class="dropdown-item" href="/my-bookings">My Bookings</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="/logout">Logout</a></li>
             </ul>

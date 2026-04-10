@@ -41,7 +41,7 @@ const hotelschema=mongoose.Schema({
   },
   maxGuests: {
   type: Number,
-  default: 5,
+  default: 15,
 },
 geometry: {
   type: {

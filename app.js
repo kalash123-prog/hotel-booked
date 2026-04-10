@@ -12,6 +12,7 @@ const expresserror=require("./utilities/error.js");
 const reviews=require("./schema/review.js");
 const cookieparser=require("cookie-parser");
 const Session=require("express-session");
+const MongoStore = require('connect-mongo').default;
 const flash=require("connect-flash");
 const passport=require("passport");//it is used in authenticating library
 const passportlocal=require("passport-local");
@@ -31,11 +32,12 @@ let listing=require("./schema/scema.js");
 const { required } = require("joi");
 app.use(express.static(path.join(__dirname,"/public")));
 app.engine("ejs", ejsmate);
+const dns = require("dns");
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-
-async function main(){
-    await mongoose.connect("mongodb://127.0.0.1:27017/hotelbokking");
-};
+async function main() {
+    await mongoose.connect(process.env.MONGO_URI);
+}
 
 main().then(()=>{
  console.log("connect successfully");
@@ -91,7 +93,17 @@ console.log("listening");
 //express session creates a unique id for user when user login and save there information by req.session and server  send  a sessionid it to users browser 
 //then if try to click any button or to move to another page then it will browser will send the same session to server and checks and we stay logged in
 
+
+const store = MongoStore.create({
+    mongoUrl:process.env.MONGO_URI,
+    crypto:{
+      secret:"myseceretcode",
+    },
+   touchafter:24*3600,
+});
+
 const sessionoption={
+      store,
     secret:"myseceretcode",
     resave:false,
     saveUninitialized:true,
@@ -117,6 +129,15 @@ app.use((req,res,next)=>{
   res.locals.error = req.flash("error"); 
   res.locals.currentUser = req.user;     
   next();
+});
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+app.get("/listing/search-page", (req, res) => {
+  res.render("search-page.ejs", { listings: [] });
 });
 
 app.get("/sign",(req,res)=>{
@@ -190,24 +211,48 @@ app.get("/listing",wrapasync(async(req,res)=>{
 app.get("/listing/new",middleware,(req,res)=>{
    res.render("new.ejs");
 });
-app.post("/create-checkout-session", async (req, res) => {
+app.get("/request-book/:id", middleware, wrapasync(async (req, res) => {
+  const { id } = req.params;
+  const { checkIn, checkOut, guests } = req.query;
+
+  const list = await listing.findById(id).populate("owner");
+
+  res.render("request.ejs", {
+    list,
+    checkIn,
+    checkOut,
+    guests
+  });
+}));
+app.post("/create-checkout-session", middleware, async (req, res) => {
   const { listingId, checkIn, checkOut, guests } = req.body;
 
   const list = await listing.findById(listingId);
 
+  // 🔒 Check booking conflict BEFORE payment
+  const conflict = await Booking.findOne({
+    room: listingId,
+    checkIn: { $lt: new Date(checkOut) },
+    checkOut: { $gt: new Date(checkIn) },
+  });
+
+  if (conflict) {
+    req.flash("error", "Room already booked ❌");
+    return res.redirect(`/listing/${listingId}`);
+  }
+
+  // 🧮 Calculate total
   const nights = Math.ceil(
     (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24)
   );
 
-  const total = nights * list.price * 100; // Razorpay uses paise
+  const total = nights * list.price * 100;
 
-  const options = {
+  const order = await razorpay.orders.create({
     amount: total,
     currency: "INR",
     receipt: "order_rcptid_11",
-  };
-
-  const order = await razorpay.orders.create(options);
+  });
 
   res.render("payment.ejs", {
     order,
@@ -218,8 +263,20 @@ app.post("/create-checkout-session", async (req, res) => {
     total
   });
 });
-app.get("/payment-success", async (req, res) => {
+app.get("/payment-success", middleware, async (req, res) => {
   const { listingId, checkIn, checkOut, guests } = req.query;
+
+  // 🔒 Double-check (VERY IMPORTANT)
+  const conflict = await Booking.findOne({
+    room: listingId,
+    checkIn: { $lt: new Date(checkOut) },
+    checkOut: { $gt: new Date(checkIn) },
+  });
+
+  if (conflict) {
+    req.flash("error", "Room already booked ❌");
+    return res.redirect(`/listing/${listingId}`);
+  }
 
   await Booking.create({
     room: listingId,
@@ -244,10 +301,17 @@ app.get("/listing/:id", wrapasync(async (req, res) => {
       populate: { path: "author" }
     });
 
-  // 🔥 Get bookings
+  // ✅ get bookings
   let bookings = await Booking.find({ room: id });
 
-  res.render("show.ejs", { list, bookings });
+  // ✅ convert to date ranges
+  let bookedDates = bookings.map(b => ({
+    from: b.checkIn,
+    to: b.checkOut
+  }));
+
+  // ✅ SEND to EJS (THIS WAS MISSING ❗)
+  res.render("show.ejs", { list, bookings, bookedDates });
 }));
 // app.get("/listing/:id",wrapasync(async(req,res)=>{
 //     let {id}=req.params;
@@ -283,64 +347,48 @@ res.redirect("/listing");//Flash = message that stays for one request only
 
 
 
-app.post("/listing/:id/book", middleware, wrapasync(async (req, res) => {
-  const { id } = req.params;
-  let { checkIn, checkOut, guests } = req.body;
+// app.post("/listing/:id/book", middleware, wrapasync(async (req, res) => {
+//   const { id } = req.params;
+//   let { checkIn, checkOut, guests } = req.body;
 
-  checkIn = new Date(checkIn);
-  checkOut = new Date(checkOut);
+//   checkIn = new Date(checkIn);
+//   checkOut = new Date(checkOut);
 
-  const list = await listing.findById(id);
+//   const list = await listing.findById(id);
 
-  // ✅ Guest validation
-  if (guests > list.maxGuests) {
-    req.flash("error", "Exceeds maximum guest limit ❌");
-    return res.redirect(`/listing/${id}`);
-  }
+//   // ✅ Guest validation
+//   if (guests > list.maxGuests) {
+//     req.flash("error", "Exceeds maximum guest limit ❌");
+//     return res.redirect(`/listing/${id}`);
+//   }
 
-  // 🔒 Check double booking
-  const conflict = await Booking.findOne({
-    room: id,
-    checkIn: { $lt: checkOut },
-    checkOut: { $gt: checkIn },
-  });
+//   // 🔒 Check double booking
+//   const conflict = await Booking.findOne({
+//     room: id,
+//     checkIn: { $lt: checkOut },
+//     checkOut: { $gt: checkIn },
+//   });
 
-  if (conflict) {
-    req.flash("error", "Room already booked for selected dates ❌");
-    return res.redirect(`/listing/${id}`);
-  }
+//   if (conflict) {
+//     req.flash("error", "Room already booked for selected dates ❌");
+//     return res.redirect(`/listing/${id}`);
+//   }
 
-  // ✅ Create booking
-  await Booking.create({
-    room: id,
-    user: req.user._id,
-    checkIn,
-    checkOut,
-    guests,
-  });
+//   // ✅ Create booking
+//   await Booking.create({
+//     room: id,
+//     user: req.user._id,
+//     checkIn,
+//     checkOut,
+//     guests,
+//   });
 
-  req.flash("success", "Room booked successfully ✅");
-  res.redirect(`/listing/${id}`);
-}));
+//   req.flash("success", "Room booked successfully ✅");
+//   res.redirect(`/listing/${id}`);
+// }));
 
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-app.get("/request-book/:id", middleware, wrapasync(async (req, res) => {
-  const { id } = req.params;
-  const { checkIn, checkOut, guests } = req.query;
 
-  const list = await listing.findById(id).populate("owner");
-
-  res.render("request.ejs", {
-    list,
-    checkIn,
-    checkOut,
-    guests
-  });
-}));
 
 app.get("/listing/:id/edit",middleware,wrapasync(async(req,res)=>{
 let {id}=req.params;
@@ -396,10 +444,39 @@ req.flash("success","review is deleted");
 res.redirect(`/listing/${id}`);
 }));
 
-app.post("/listing/search",wrapasync(async(req,res)=>{
- let {location}=req.body;
- let listings=await listing.find({location:location});
- res.render("search.ejs",{listings});
+app.post("/listing/search", wrapasync(async (req, res) => {
+
+  let { location, minPrice, maxPrice, category } = req.body;
+
+  let query = {};
+
+  // Location filter (case insensitive)
+  if (location) {
+    query.location = { $regex: location, $options: "i" };
+  }
+
+  //  Price filter
+  if (minPrice || maxPrice) {
+    query.price = {};
+
+    if (minPrice) {
+      query.price.$gte = Number(minPrice);
+    }
+
+    if (maxPrice) {
+      query.price.$lte = Number(maxPrice);
+    }
+  }
+
+  // Category filter
+  if (category) {
+    query.category = category;
+  }
+
+  let listings = await listing.find(query);
+
+  res.render("search.ejs", { listings });
+
 }));
 app.post("/listing/category",wrapasync(async(req,res)=>{
       let { category } = req.body;
@@ -407,6 +484,14 @@ app.post("/listing/category",wrapasync(async(req,res)=>{
  let listings=await listing.find({category:category});
    
  res.render("category.ejs",{listings});
+}));
+
+app.get("/my-bookings", middleware, wrapasync(async (req, res) => {
+  console.log(req.user._id);
+  let bookings = await Booking.find({ user: req.user._id })
+    .populate("room");
+
+  res.render("bookings.ejs", { bookings });
 }));
 
 app.use((req,res,next)=>{
@@ -419,3 +504,4 @@ app.use((err,req,res,next)=>{
 //   res.status(status).send(message);
 });
 
+//Cast to ObjectId failed for value "{ Userid: '69d8add62cd975b063fe47cd' }" (type Object) at path "_id" for model "Booking"

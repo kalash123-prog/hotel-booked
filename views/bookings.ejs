@@ -1,0 +1,57 @@
+  <% layout("/boilerolate/boilerplate.ejs") %>
+
+<div class="container mt-5 d-flex justify-content-center">
+  <div class="w-100" style="max-width: 800px;">
+
+    <h2 class="text-center mb-4 fw-bold text-primary">
+      My Bookings
+    </h2>
+
+    <% if(bookings.length === 0) { %>
+      <div class="alert alert-info text-center shadow-sm rounded-3">
+        No bookings yet 😔
+      </div>
+    <% } else { %>
+
+      <% bookings.forEach(b => { %>
+        <div class="card mb-4 shadow-lg border-0 rounded-4 hover:scale-105 transition duration-300">
+
+          <div class="card-body">
+
+            <!-- Title -->
+            <h5 class="card-title fw-bold text-dark mb-3">
+              <i class="fa-solid fa-hotel me-2 text-primary"></i>
+              <%= b.room.title %>
+            </h5>
+
+            <!-- Info Grid -->
+            <div class="row text-muted">
+
+              <div class="col-md-4 mb-2">
+                <i class="fa-solid fa-users me-2 text-success"></i>
+                <strong>Guests:</strong> <%= b.guests %>
+              </div>
+
+              <div class="col-md-4 mb-2">
+                <i class="fa-solid fa-calendar-check me-2 text-info"></i>
+                <strong>Check-in:</strong><br>
+                <%= new Date(b.checkIn).toDateString() %>
+              </div>
+
+              <div class="col-md-4 mb-2">
+                <i class="fa-solid fa-calendar-xmark me-2 text-danger"></i>
+                <strong>Check-out:</strong><br>
+                <%= new Date(b.checkOut).toDateString() %>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      <% }) %>
+
+    <% } %>
+
+  </div>
+</div>
