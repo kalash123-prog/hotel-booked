@@ -1,0 +1,87 @@
+<%- layout("boilerolate/boilerplate") %>
+
+<style>
+  .result-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white; padding: 2rem; border-radius: 16px; margin-bottom: 2rem;
+  }
+  .result-header h2 { font-weight: 700; margin-bottom: 0.3rem; }
+  .trip-meta span {
+    background: rgba(255,255,255,0.2); border-radius: 50px;
+    padding: 0.25rem 0.8rem; font-size: 0.85rem; margin-right: 0.5rem;
+  }
+  .ai-plan-card {
+    background: white; border-radius: 16px; padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07); margin-bottom: 2rem;
+    line-height: 1.8; white-space: pre-wrap; font-size: 0.97rem; color: #333;
+  }
+  .section-title { font-size: 1.4rem; font-weight: 700; color: #333; margin-bottom: 1.2rem; }
+  .hotel-card {
+    background: white; border-radius: 14px; overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07); transition: transform 0.2s; height: 100%;
+  }
+  .hotel-card:hover { transform: translateY(-4px); }
+  .hotel-card img { width: 100%; height: 180px; object-fit: cover; }
+  .hotel-card-body { padding: 1rem; }
+  .hotel-card-body h5 { font-weight: 700; margin-bottom: 0.3rem; }
+  .hotel-price { color: #667eea; font-weight: 700; font-size: 1.1rem; }
+  .btn-book {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white; border: none; border-radius: 50px;
+    padding: 0.5rem 1.4rem; font-weight: 600; text-decoration: none;
+    display: inline-block; margin-top: 0.7rem; font-size: 0.9rem;
+  }
+  .btn-book:hover { opacity: 0.88; color: white; }
+  .btn-replan {
+    border: 2px solid #667eea; color: #667eea; border-radius: 50px;
+    padding: 0.5rem 1.5rem; font-weight: 600; text-decoration: none; display: inline-block;
+  }
+  .btn-replan:hover { background: #667eea; color: white; }
+</style>
+
+<div class="container mt-4 mb-5">
+
+  <div class="result-header">
+    <h2>🗺️ Your Trip to <%= destination %></h2>
+    <div class="trip-meta mt-2">
+      <span>📅 <%= checkIn %> → <%= checkOut %></span>
+      <span>👥 <%= guests %> guest(s)</span>
+      <span>💰 ₹<%= budget %></span>
+    </div>
+  </div>
+
+  <div class="section-title">✨ AI-Generated Itinerary</div>
+  <div class="ai-plan-card"><%= aiPlan %></div>
+
+  <div class="section-title">🏨 Available Hotels in <%= destination %></div>
+
+  <% if (hotels.length > 0) { %>
+    <div class="row g-3 mb-4">
+      <% hotels.forEach(h => { %>
+        <div class="col-md-4">
+          <div class="hotel-card">
+            <img src="<%= h.image.url %>" alt="<%= h.title %>" />
+            <div class="hotel-card-body">
+              <h5><%= h.title %></h5>
+              <div class="text-muted small mb-1">📍 <%= h.location %></div>
+              <div class="hotel-price">₹<%= h.price %>/night</div>
+              <a href="/listing/<%= h._id %>?checkIn=<%= checkIn %>&checkOut=<%= checkOut %>&guests=<%= guests %>" class="btn-book">
+                Book Now →
+              </a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div style="background:#f8f9fa;border-radius:12px;padding:2rem;text-align:center;color:#777;">
+      <p>😕 No hotels listed for <strong><%= destination %></strong> yet.</p>
+      <a href="/listing" class="btn-book">Browse All Hotels</a>
+    </div>
+  <% } %>
+
+  <div class="mt-3 d-flex gap-3 flex-wrap">
+    <a href="/trip" class="btn-replan">🔄 Plan Another Trip</a>
+    <a href="/listing" class="btn-book">🏨 Browse All Hotels</a>
+  </div>
+</div>

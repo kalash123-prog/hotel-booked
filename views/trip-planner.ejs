@@ -1,0 +1,105 @@
+<%- layout("boilerolate/boilerplate") %>
+
+<style>
+  .trip-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem 1rem;
+    text-align: center;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+  }
+  .trip-hero h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .trip-hero p { font-size: 1.1rem; opacity: 0.9; }
+  .trip-form-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .trip-form-card label { font-weight: 600; color: #333; margin-bottom: 0.3rem; display: block; }
+  .trip-form-card input {
+    border-radius: 10px;
+    border: 1.5px solid #e0e0e0;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  .trip-form-card input:focus { border-color: #667eea; outline: none; }
+  .btn-plan {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 0.8rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .btn-plan:hover { opacity: 0.9; }
+  #loading-spinner { display: none; text-align: center; margin-top: 1rem; color: #667eea; font-weight: 600; }
+</style>
+
+<div class="container mt-4">
+  <div class="trip-hero">
+    <div style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:50px;padding:0.3rem 1rem;font-size:0.85rem;margin-bottom:1rem;display:inline-block;">✨ Powered by AI</div>
+    <h1>🗺️ AI Trip Planner</h1>
+    <p>Tell us where you want to go — we'll build your itinerary + find the best hotels</p>
+  </div>
+
+  <div class="trip-form-card">
+    <form action="/trip/plan" method="POST" onsubmit="showLoading()">
+
+      <label>📍 Destination</label>
+      <input type="text" name="destination" placeholder="e.g. Goa, Manali, Jaipur..." required />
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div>
+          <label>📅 Check-in Date</label>
+          <input type="date" id="checkIn" name="checkIn" required />
+        </div>
+        <div>
+          <label>📅 Check-out Date</label>
+          <input type="date" id="checkOut" name="checkOut" required />
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div>
+          <label>👥 Number of Guests</label>
+          <input type="number" name="guests" min="1" max="20" value="2" required />
+        </div>
+        <div>
+          <label>💰 Total Budget (₹)</label>
+          <input type="number" name="budget" placeholder="e.g. 15000" min="500" required />
+        </div>
+      </div>
+
+      <button type="submit" class="btn-plan">🤖 Generate My Trip Plan</button>
+
+      <div id="loading-spinner">
+        <div class="spinner-border text-primary me-2" role="status" style="width:1.2rem;height:1.2rem;"></div>
+        AI is building your perfect trip... (takes ~10 seconds)
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("checkIn").min = today;
+  document.getElementById("checkOut").min = today;
+  document.getElementById("checkIn").addEventListener("change", function() {
+    document.getElementById("checkOut").min = this.value;
+  });
+  function showLoading() {
+    document.getElementById("loading-spinner").style.display = "block";
+    document.querySelector(".btn-plan").disabled = true;
+    document.querySelector(".btn-plan").textContent = "Generating...";
+  }
+</script>

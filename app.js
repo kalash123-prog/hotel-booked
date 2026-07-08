@@ -1,6 +1,8 @@
  require('dotenv').config(); // this used to access from .env file which is used for connecting and storing our files to cludeflare
  //then it will generate one link and save it in mongodbs
 //  console.log(process.env.API_KEY)
+const Groq = require("groq-sdk");
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
  const express=require("express");
 const app=express();
 const mongoose=require("mongoose");
@@ -26,10 +28,13 @@ const {storage}=require("./configure.js");
 const upload = multer({storage});//this will upload files from form to this file 'uploads/'.
 app.use(methodoverride("_method"));
 app.use(express.urlencoded({extended:true}));
+app.use(express.json());
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 let listing=require("./schema/scema.js");
 const { required } = require("joi");
+const TripPlan = require("./schema/tripPlan.js");
+const { generateTripPlan } = require("./services/tripPlannerService.js");
 app.use(express.static(path.join(__dirname,"/public")));
 app.engine("ejs", ejsmate);
 const dns = require("dns");
@@ -493,7 +498,55 @@ app.get("/my-bookings", middleware, wrapasync(async (req, res) => {
 
   res.render("bookings.ejs", { bookings });
 }));
+app.get("/trip", middleware, (req, res) => {
+  res.render("trip-planner.ejs");
+});
 
+app.post("/trip/plan", middleware, wrapasync(async (req, res) => {
+  const { destination, checkIn, checkOut, guests, budget } = req.body;
+
+  const hotels = await listing.find({
+    location: { $regex: destination, $options: "i" },
+  }).limit(6);
+
+  const aiPlan = await generateTripPlan({ destination, checkIn, checkOut, guests, budget, hotels });
+
+  await TripPlan.create({
+    user: req.user._id,
+    destination,
+    checkIn: new Date(checkIn),
+    checkOut: new Date(checkOut),
+    guests: Number(guests),
+    budget: Number(budget),
+    aiPlan,
+    recommendedHotels: hotels.map((h) => h._id),
+  });
+
+  res.render("trip-result.ejs", { destination, checkIn, checkOut, guests, budget, aiPlan, hotels });
+}));
+
+app.post("/chatbot", async (req, res) => {
+  try {
+    const { message, history } = req.body;
+    console.log("Message received:", message); // check terminal
+
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "user", content: message }
+      ],
+      max_tokens: 500,
+    });
+
+    const reply = completion.choices[0].message.content;
+    console.log("Reply:", reply); // check terminal
+    res.json({ reply });
+
+  } catch (err) {
+    console.log("CHATBOT ERROR:", err.message); // THIS will show exact problem
+    res.status(500).json({ reply: "Error: " + err.message });
+  }
+});
 app.use((req,res,next)=>{
 next(new expresserror(404,"page not found"));
 });
