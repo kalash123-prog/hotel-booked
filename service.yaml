@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: travel-planner-service
+spec:
+  type: LoadBalancer                          
+  selector:
+    app: travel-planner
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

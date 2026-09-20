@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: travel-planner-deployment
+  labels:
+    app: travel-planner
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: travel-planner
+  template:
+    metadata:
+      labels:
+        app: travel-planner
+    spec:
+      containers:
+        - name: travel-planner-app
+          image: yourusername/ai-travel-planner:v1   
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080                   
+          envFrom:
+            - secretRef:
+                name: app-secret
