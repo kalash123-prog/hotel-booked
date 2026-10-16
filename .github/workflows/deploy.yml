@@ -27,7 +27,7 @@ jobs:
         run: npm install
 
       - name: Check JavaScript syntax
-        run: node --check index.js
+        run: node --check app.js
 
   deploy:
     needs: ci
